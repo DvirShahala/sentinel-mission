@@ -45,7 +45,7 @@ interface IDate {
 }
 
 export interface ICacheEntity {
-  cacheData: IGetImagesRes;
+  cacheData: string;
 }
 
 export interface ICache {

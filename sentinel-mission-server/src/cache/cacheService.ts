@@ -1,6 +1,6 @@
 import { ICache, ICacheEntity } from "../types/types";
 
-class CacheService {
+export class CacheService {
   protected cache: {};
 
   constructor() {
@@ -15,7 +15,7 @@ class CacheService {
     this.cache = {};
   }
 
-  public getById(key: string): ICacheEntity {
+  public getByKey(key: string): ICacheEntity {
     return (this.cache as ICache)[key];
   }
 
@@ -23,5 +23,3 @@ class CacheService {
     this.cache = cache;
   }
 }
-
-export default new CacheService();
