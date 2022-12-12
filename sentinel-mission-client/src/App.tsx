@@ -1,11 +1,11 @@
 import "./App.css";
-import Card from "./components/card/card";
+import CardsWarper from "./components/cardsWarper/CardsWarper";
 
 function App() {
   return (
     <>
       <div className="title">Sentinel mission</div>
-      <Card />
+      <CardsWarper />
     </>
   );
 }

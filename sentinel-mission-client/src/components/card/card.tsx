@@ -1,29 +1,15 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { fetchRandomImages } from "../../helpers/helpers";
+import "./Card.css";
 
-const Card: React.FC = () => {
-  const [imagesUrl, setImagesUrl] = useState<Array<string>>([]);
+interface IPropsCard {
+  imageUrl: string;
+}
 
-  useEffect(() => {
-    const fechImages = async () => {
-      const images = await fetchRandomImages();
-      setImagesUrl(images);
-    };
-
-    fechImages();
-  }, []);
-
+const Card: React.FC<IPropsCard> = ({ imageUrl }) => {
   return (
     <>
       <div className="card">
-        <img src={imagesUrl[0]} alt="sentinelMission" />
-        <div className="container">
-          <h4>
-            <b>John Doe</b>
-          </h4>
-          <p>Architect & Engineer</p>
-        </div>
+        <img className="img" src={imageUrl} alt="sentinelMission" />
       </div>
     </>
   );
