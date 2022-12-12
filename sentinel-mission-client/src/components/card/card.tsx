@@ -1,14 +1,23 @@
 import * as React from "react";
-import imageExample from "../../images/exampleImageCard.jpeg";
+import { useEffect, useState } from "react";
+import { fetchRandomImages } from "../../helpers/helpers";
 
 const Card: React.FC = () => {
+  const [imagesUrl, setImagesUrl] = useState<Array<string>>([]);
+
+  useEffect(() => {
+    const fechImages = async () => {
+      const images = await fetchRandomImages();
+      setImagesUrl(images);
+    };
+
+    fechImages();
+  }, []);
+
   return (
     <>
       <div className="card">
-        <img
-          src="https://scihub.copernicus.eu/dhus/odata/v1/Products('2b17b57d-fff4-4645-b539-91f305c27c69')/Nodes('S1A_IW_SLC__1SDV_20160117T103451_20160117T103518_009533_00DD94_D46A.SAFE') /Nodes('preview')/Nodes('quick-look.png')/$value"
-          alt="sentinelMission"
-        />
+        <img src={imagesUrl[0]} alt="sentinelMission" />
         <div className="container">
           <h4>
             <b>John Doe</b>

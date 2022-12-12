@@ -5,7 +5,7 @@ function App() {
   return (
     <>
       <div className="title">Sentinel mission</div>
-      <Card></Card>
+      <Card />
     </>
   );
 }
