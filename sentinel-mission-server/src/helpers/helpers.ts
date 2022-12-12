@@ -8,9 +8,7 @@ const israelPolygon =
 const cache = new CacheService();
 
 // Get random image from the api
-export const getRandomImage = async (): Promise<
-  Array<string> | string | undefined
-> => {
+export const getRandomImage = async (): Promise<Array<string> | string> => {
   try {
     const randomStart = getRandomNumber(
       Number(process.env.MIN_RANDOM_NUMBER) ?? 1,
@@ -22,9 +20,11 @@ export const getRandomImage = async (): Promise<
     if (cache.getByKey(String(randomStart))) {
       console.log("IM FROM CACHEEEEEE");
 
-      return [cache.getByKey(`${randomStart}`).cacheData];
+      return [cache.getByKey(String(randomStart)).cacheData];
     } else {
       console.log("IM FROM APIIII");
+
+      const imagesurl: Array<string> = [];
       const { data } = await Axios.get<IGetImagesRes>(
         `${process.env.OPEN_SEARCH_HUB_BASE_URL}?q=footprint:"Intersects(POLYGON((${israelPolygon})))"cloudcoverpercentage: [${process.env.CLOUD_COVER_PERCENTAGE}]platformname:${process.env.PLATFORM_NAME}&rows=${process.env.ROWS}&start=${randomStart}&format=${process.env.FORMAT}`,
         {
@@ -37,8 +37,6 @@ export const getRandomImage = async (): Promise<
           // },
         }
       );
-
-      let imagesurl: Array<string> = [];
 
       if (Array.isArray(data.feed.entry)) {
         data.feed.entry.forEach((entry) => {
@@ -57,7 +55,9 @@ export const getRandomImage = async (): Promise<
       }
 
       if (imagesurl.length) {
-        cache.upsertEntity({ cacheData: imagesurl[0] }, String(randomStart));
+        imagesurl.forEach((imageUrl: string) => {
+          cache.upsertEntity({ cacheData: imageUrl }, String(randomStart));
+        });
         return imagesurl;
       } else {
         throw new Error("Image url does not found");
