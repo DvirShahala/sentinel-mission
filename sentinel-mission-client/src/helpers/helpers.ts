@@ -1,12 +1,19 @@
 import Axios from "axios";
 
-export const fetchRandomImages = async () => {
-  return await Axios.get<string[]>(
-    `${process.env.REACT_APP_SERVER_URL}${process.env.REACT_APP_RANDOM_IMAGES_ROUTE}`
+export const fetchRandomImages = async (numberOfImages: number) => {
+  return Axios.get<Array<string>>(
+    `${process.env.REACT_APP_SERVER_URL}${process.env.REACT_APP_RANDOM_IMAGES_ROUTE}`,
+    {
+      params: {
+        numberOfImages,
+      },
+    }
   )
-    .then((res) => res.data)
+    .then((res) => {
+      return res.data;
+    })
     .catch((err) => {
       console.log(err);
-      return [];
+      throw err;
     });
 };

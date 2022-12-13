@@ -5,7 +5,9 @@ export class SentinelRoutes {
   public route(app: Application) {
     app.get("/api/randomImage", async (req: Request, res: Response) => {
       try {
-        const imagesUrl = await getRandomImage();
+        const imagesUrl = await getRandomImage(
+          Number(req.query.numberOfImages) ?? 1
+        );
 
         res.status(200).send(imagesUrl);
         return imagesUrl;

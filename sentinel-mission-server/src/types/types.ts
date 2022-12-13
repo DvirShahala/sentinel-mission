@@ -18,7 +18,8 @@ export interface IGetImagesRes {
       startPage: string;
     };
     link: Array<ILink>;
-    entry: Array<IEntry> | IEntry;
+    entry: IEntry;
+    // entry: Array<IEntry> | IEntry;
   };
 }
 

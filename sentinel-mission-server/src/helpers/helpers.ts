@@ -8,23 +8,34 @@ const israelPolygon =
 const cache = new CacheService();
 
 // Get random image from the api
-export const getRandomImage = async (): Promise<Array<string> | string> => {
+export const getRandomImage = async (
+  numberOfImages: number
+): Promise<Array<string>> => {
+  const promises = [];
+  for (let i = 0; i < numberOfImages; ++i) {
+    promises.push(fetchRandomImage());
+  }
+  return Promise.all(promises).then((results) => {
+    return results;
+  });
+};
+
+export const fetchRandomImage = async () => {
   try {
     const randomStart = getRandomNumber(
       Number(process.env.MIN_RANDOM_NUMBER) ?? 1,
       Number(process.env.MAX_RANDOM_NUMBER) ?? 101
     );
 
-    console.log("randomStart- ", randomStart);
+    console.log("random number -", randomStart);
 
     if (cache.getByKey(String(randomStart))) {
-      console.log("IM FROM CACHEEEEEE");
+      console.log("Fetching from cache");
 
-      return [cache.getByKey(String(randomStart)).cacheData];
+      return cache.getByKey(String(randomStart)).cacheData;
     } else {
-      console.log("IM FROM APIIII");
+      console.log("Fetching from api");
 
-      const imagesurl: Array<string> = [];
       const { data } = await Axios.get<IGetImagesRes>(
         `${process.env.OPEN_SEARCH_HUB_BASE_URL}?q=footprint:"Intersects(POLYGON((${israelPolygon})))"cloudcoverpercentage: [${process.env.CLOUD_COVER_PERCENTAGE}]platformname:${process.env.PLATFORM_NAME}&rows=${process.env.ROWS}&start=${randomStart}&format=${process.env.FORMAT}`,
         {
@@ -38,27 +49,13 @@ export const getRandomImage = async (): Promise<Array<string> | string> => {
         }
       );
 
-      if (Array.isArray(data.feed.entry)) {
-        data.feed.entry.forEach((entry) => {
-          const link = entry.link.find((link) => link.rel === "icon");
-          if (link) {
-            imagesurl.push(link.href);
-          }
-        });
-      } else {
-        const linkEntity = data.feed.entry.link.find(
-          (link) => link?.rel === "icon"
-        );
-        if (linkEntity) {
-          imagesurl.push(linkEntity.href);
-        }
-      }
+      const linkEntity = data.feed.entry.link.find(
+        (link) => link?.rel === "icon"
+      );
 
-      if (imagesurl.length) {
-        imagesurl.forEach((imageUrl: string) => {
-          cache.upsertEntity({ cacheData: imageUrl }, String(randomStart));
-        });
-        return imagesurl;
+      if (linkEntity) {
+        cache.upsertEntity({ cacheData: linkEntity.href }, String(randomStart));
+        return linkEntity.href;
       } else {
         throw new Error("Image url does not found");
       }

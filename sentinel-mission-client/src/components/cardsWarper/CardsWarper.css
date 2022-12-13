@@ -2,3 +2,12 @@
   display: flex;
   justify-content: center;
 }
+button {
+  margin-top: 1%;
+  margin-left: 20px;
+  background-color: #008cba;
+  border: none;
+  color: #ededed;
+  height: 30px;
+  width: 5%;
+}
