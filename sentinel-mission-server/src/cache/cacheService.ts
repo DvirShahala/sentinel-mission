@@ -11,15 +11,7 @@ export class CacheService {
     (this.cache as ICache)[key] = cacheObject;
   }
 
-  public invalidateCache() {
-    this.cache = {};
-  }
-
   public getByKey(key: string): ICacheEntity {
     return (this.cache as ICache)[key];
-  }
-
-  public setCache(cache: ICache) {
-    this.cache = cache;
   }
 }

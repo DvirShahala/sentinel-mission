@@ -19,7 +19,6 @@ export interface IGetImagesRes {
     };
     link: Array<ILink>;
     entry: IEntry;
-    // entry: Array<IEntry> | IEntry;
   };
 }
 

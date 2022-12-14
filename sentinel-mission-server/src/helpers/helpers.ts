@@ -7,17 +7,20 @@ const israelPolygon =
 
 const cache = new CacheService();
 
-// Get random image from the api
-export const getRandomImage = async (
+// Get random image from the API
+export const getRandomImages = async (
   numberOfImages: number
 ): Promise<Array<string>> => {
   const promises = [];
   for (let i = 0; i < numberOfImages; ++i) {
-    promises.push(fetchRandomImage());
+    try {
+      const fetchImagePromise = fetchRandomImage();
+      promises.push(fetchImagePromise);
+    } catch (error) {
+      throw error;
+    }
   }
-  return Promise.all(promises).then((results) => {
-    return results;
-  });
+  return await Promise.all(promises);
 };
 
 export const fetchRandomImage = async () => {
@@ -40,15 +43,13 @@ export const fetchRandomImage = async () => {
         `${process.env.OPEN_SEARCH_HUB_BASE_URL}?q=footprint:"Intersects(POLYGON((${israelPolygon})))"cloudcoverpercentage: [${process.env.CLOUD_COVER_PERCENTAGE}]platformname:${process.env.PLATFORM_NAME}&rows=${process.env.ROWS}&start=${randomStart}&format=${process.env.FORMAT}`,
         {
           auth: {
-            username: "dvirsh",
-            password: "Dvir123321!",
+            username: process.env.USERNAME!,
+            password: process.env.PASSWORD!,
           },
-          // headers: {
-          //   Authorization: "Basic ZHZpcnNoOkR2aXIxMjMzMjEh",
-          // },
         }
       );
 
+      // Extract the image link
       const linkEntity = data.feed.entry.link.find(
         (link) => link?.rel === "icon"
       );
