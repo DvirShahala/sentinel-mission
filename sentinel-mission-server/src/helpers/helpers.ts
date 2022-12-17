@@ -8,7 +8,6 @@ const israelPolygon =
 
 const cache = new CacheService();
 
-// Get random image from the API
 export const getRandomImages = async (
   numberOfImages: number
 ): Promise<Array<string>> => {
@@ -24,6 +23,7 @@ export const getRandomImages = async (
   return await Promise.all(promises);
 };
 
+// Get random image from the API
 export const fetchRandomImage = async () => {
   try {
     const randomStart = getRandomNumber(
@@ -41,7 +41,7 @@ export const fetchRandomImage = async () => {
       logger.info("Fetching from api");
 
       const { data } = await Axios.get<IGetImagesRes>(
-        `${process.env.OPEN_SEARCH_HUB_BASE_URL}?q=footprint:"Intersects(POLYGON((${israelPolygon})))"cloudcoverpercentage: [${process.env.CLOUD_COVER_PERCENTAGE}]platformname:${process.env.PLATFORM_NAME}&rows=${process.env.ROWS}&start=${randomStart}&format=${process.env.FORMAT}`,
+        `${process.env.OPEN_SEARCH_HUB_BASE_URL}?q=footprint:"Intersects(POLYGON((${israelPolygon})))"cloudcoverpercentage: ${process.env.CLOUD_COVER_PERCENTAGE}platformname:${process.env.PLATFORM_NAME}&rows=${process.env.ROWS}&start=${randomStart}&format=${process.env.FORMAT}`,
         {
           auth: {
             username: process.env.USERNAME!,
@@ -51,7 +51,7 @@ export const fetchRandomImage = async () => {
       );
 
       // Extract the image link
-      const linkEntity = data.feed.entry.link.find(
+      const linkEntity = data?.feed?.entry?.link?.find(
         (link) => link?.rel === "icon"
       );
 
